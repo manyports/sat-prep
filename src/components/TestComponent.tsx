@@ -641,14 +641,14 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
               {currentQuestionIndex > 0 || currentSectionIndex > 0 ? (
                 <Button
                   onClick={goToPreviousQuestion}
-                  className="bg-blue-800 hover:bg-blue-900 text-white rounded-full px-5 py-5 text-xs md:text-sm md:px-6 md:py-2"
+                  className="bg-blue-800 hover:bg-blue-900 text-white rounded-full px-5 py-5 text-xs md:text-sm md:px-6 md:py-6"
                 >
                   Previous
                 </Button>
               ) : null}
               <Button
                 onClick={goToNextQuestion}
-                className="bg-blue-800 hover:bg-blue-900 text-white rounded-full px-5 py-5 text-xs md:text-sm md:px-6 md:py-2"
+                className="bg-blue-800 hover:bg-blue-900 text-white rounded-full px-5 py-5 text-xs md:text-sm md:px-6 md:py-6"
               >
                 Next
               </Button>
