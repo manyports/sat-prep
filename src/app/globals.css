@@ -8,7 +8,9 @@
   }
 }
 
-
+.font-noto-serif {
+  font-family: var(--font-noto-serif);
+}
 
 @layer base {
   :root {
@@ -65,8 +67,6 @@
     --chart-5: 340 75% 55%;
   }
 }
-
-
 
 @layer base {
   * {

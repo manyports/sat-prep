@@ -1,0 +1,256 @@
+{
+  "id": "sat-practice-10",
+  "title": "Official SAT Practice Test #10",
+  "duration": "3 hours 15 minutes",
+  "sections": [
+    {
+      "id": "reading",
+      "title": "Reading & Writing",
+      "duration": "64 minutes",
+      "questions": [
+        {
+          "id": "r1",
+          "text": "The passage suggests that the main reason the narrator initially visits the lake is to",
+          "options": [
+            {
+              "id": "r1-a",
+              "text": "revisit a place that was important to her childhood"
+            },
+            {
+              "id": "r1-b",
+              "text": "introduce her own children to a natural setting"
+            },
+            {
+              "id": "r1-c",
+              "text": "gather data about changes in the environment"
+            },
+            {
+              "id": "r1-d",
+              "text": "conduct research for an academic paper"
+            }
+          ],
+          "correctAnswer": "r1-b",
+          "passage": "When I returned to the lake after twenty years, I was struck by how little had changed. The water still lapped gently at the shore, the pine trees still swayed in the breeze, and the mountains still reflected in the water's surface. Yet something was different—not in the landscape, but in me. I had brought my children here to show them the place that had meant so much to me as a child, but I found myself seeing it through new eyes. No longer was I the carefree child skipping stones and chasing butterflies; I was now the parent watching carefully as my own children discovered the wonders of nature for themselves. In that moment, I understood that while the lake had remained constant, I had been transformed by the passing years and the responsibilities of adulthood."
+        },
+        {
+          "id": "r2",
+          "text": "In the context of the passage, the word \"constant\" most nearly means",
+          "options": [
+            {
+              "id": "r2-a",
+              "text": "persistent"
+            },
+            {
+              "id": "r2-b",
+              "text": "unchanged"
+            },
+            {
+              "id": "r2-c",
+              "text": "continuous"
+            },
+            {
+              "id": "r2-d",
+              "text": "reliable"
+            }
+          ],
+          "correctAnswer": "r2-b",
+          "passage": null
+        },
+        {
+          "id": "r3",
+          "text": "Which choice best describes the structure of the passage?",
+          "options": [
+            {
+              "id": "r3-a",
+              "text": "A chronological account of events followed by a reflection"
+            },
+            {
+              "id": "r3-b",
+              "text": "A comparison of past and present circumstances"
+            },
+            {
+              "id": "r3-c",
+              "text": "A statement of a problem followed by possible solutions"
+            },
+            {
+              "id": "r3-d",
+              "text": "A personal anecdote that illustrates a scientific principle"
+            }
+          ],
+          "correctAnswer": "r3-b",
+          "passage": null
+        },
+        {
+          "id": "r4",
+          "text": "Recent data from the Bureau of Labor Statistics indicate that the unemployment rate for high school graduates who do not attend college is significantly higher than for those with bachelor's degrees. However, certain vocational fields show employment rates comparable to those of college graduates, suggesting that _______.",
+          "options": [
+            {
+              "id": "r4-a",
+              "text": "all high school students should pursue a college education"
+            },
+            {
+              "id": "r4-b",
+              "text": "college degrees are becoming less valuable in the job market"
+            },
+            {
+              "id": "r4-c",
+              "text": "vocational training may be a viable alternative to a four-year degree for some students"
+            },
+            {
+              "id": "r4-d",
+              "text": "employment rates are not a reliable indicator of economic success"
+            }
+          ],
+          "correctAnswer": "r4-c",
+          "passage": null
+        },
+        {
+          "id": "r5",
+          "text": "The author's tone in the passage can best be described as",
+          "options": [
+            {
+              "id": "r5-a",
+              "text": "critical and dismissive"
+            },
+            {
+              "id": "r5-b",
+              "text": "nostalgic and reflective"
+            },
+            {
+              "id": "r5-c",
+              "text": "enthusiastic and optimistic"
+            },
+            {
+              "id": "r5-d",
+              "text": "objective and analytical"
+            }
+          ],
+          "correctAnswer": "r5-b",
+          "passage": null
+        }
+      ]
+    },
+    {
+      "id": "math",
+      "title": "Math",
+      "duration": "80 minutes",
+      "questions": [
+        {
+          "id": "m1",
+          "text": "If 3x - 5 = 16, what is the value of x?",
+          "options": [
+            {
+              "id": "m1-a",
+              "text": "3"
+            },
+            {
+              "id": "m1-b",
+              "text": "7"
+            },
+            {
+              "id": "m1-c",
+              "text": "10"
+            },
+            {
+              "id": "m1-d",
+              "text": "21"
+            }
+          ],
+          "correctAnswer": "m1-b"
+        },
+        {
+          "id": "m2",
+          "text": "The function f(x) = 2x² - 4x + 3 has its minimum value at x = a. What is the value of a?",
+          "options": [
+            {
+              "id": "m2-a",
+              "text": "-1"
+            },
+            {
+              "id": "m2-b",
+              "text": "0"
+            },
+            {
+              "id": "m2-c",
+              "text": "1"
+            },
+            {
+              "id": "m2-d",
+              "text": "2"
+            }
+          ],
+          "correctAnswer": "m2-c"
+        },
+        {
+          "id": "m3",
+          "text": "A circle has a circumference of 12π inches. What is the area of the circle in square inches?",
+          "options": [
+            {
+              "id": "m3-a",
+              "text": "12π"
+            },
+            {
+              "id": "m3-b",
+              "text": "36π"
+            },
+            {
+              "id": "m3-c",
+              "text": "48π"
+            },
+            {
+              "id": "m3-d",
+              "text": "144π"
+            }
+          ],
+          "correctAnswer": "m3-b"
+        },
+        {
+          "id": "m4",
+          "text": "In triangle ABC, the measure of angle B is 45° and the measure of angle C is 60°. What is the measure of angle A?",
+          "options": [
+            {
+              "id": "m4-a",
+              "text": "45°"
+            },
+            {
+              "id": "m4-b",
+              "text": "60°"
+            },
+            {
+              "id": "m4-c",
+              "text": "75°"
+            },
+            {
+              "id": "m4-d",
+              "text": "105°"
+            }
+          ],
+          "correctAnswer": "m4-c"
+        },
+        {
+          "id": "m5",
+          "text": "If f(x) = 3x - 2 and g(x) = x² + 1, what is the value of f(g(2))?",
+          "options": [
+            {
+              "id": "m5-a",
+              "text": "4"
+            },
+            {
+              "id": "m5-b",
+              "text": "8"
+            },
+            {
+              "id": "m5-c",
+              "text": "13"
+            },
+            {
+              "id": "m5-d",
+              "text": "15"
+            }
+          ],
+          "correctAnswer": "m5-c"
+        }
+      ]
+    }
+  ]
+} 

@@ -12,56 +12,56 @@ export default function PracticeTestsPage() {
   
   const practiceSets = [
     {
-      id: 1,
+      id: "sat-practice-10",
       title: "Official SAT Practice Test #10",
       duration: "3 hours 15 minutes",
       tags: ["Reading", "Writing", "Math"],
       type: "official"
     },
     {
-      id: 2,
+      id: "sat-practice-9",
       title: "Official SAT Practice Test #9",
       duration: "3 hours 15 minutes",
       tags: ["Reading", "Writing", "Math"],
       type: "official"
     },
     {
-      id: 3,
+      id: "sat-practice-8",
       title: "Official SAT Practice Test #8",
       duration: "3 hours 15 minutes",
       tags: ["Reading", "Writing", "Math"],
       type: "official"
     },
     {
-      id: 4,
+      id: "sat-practice-7",
       title: "Official SAT Practice Test #7",
       duration: "3 hours 15 minutes",
       tags: ["Reading", "Writing", "Math"],
       type: "official"
     },
     {
-      id: 5,
+      id: "mini-reading",
       title: "Mini Test - Reading",
       duration: "35 minutes",
       tags: ["Reading"],
       type: "mini"
     },
     {
-      id: 6,
+      id: "mini-writing",
       title: "Mini Test - Writing",
       duration: "35 minutes",
       tags: ["Writing"],
       type: "mini"
     },
     {
-      id: 7,
+      id: "mini-math",
       title: "Mini Test - Math",
       duration: "35 minutes",
       tags: ["Math"],
       type: "mini"
     },
     {
-      id: 8,
+      id: "diagnostic",
       title: "Diagnostic Test",
       duration: "1 hour 40 minutes",
       tags: ["Reading", "Writing", "Math"],
@@ -134,12 +134,14 @@ export default function PracticeTestsPage() {
                     ))}
                   </div>
                   <div className="mt-auto flex justify-end">
-                    <Button 
-                      className="bg-blue-900 hover:bg-blue-800 text-white text-xs md:text-sm"
-                      size="sm"
-                    >
-                      Start Test
-                    </Button>
+                    <Link href={`/test/${test.id}`}>
+                      <Button 
+                        className="bg-blue-900 hover:bg-blue-800 text-white text-xs md:text-sm"
+                        size="sm"
+                      >
+                        Start Test
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </GridItem>
@@ -179,7 +181,7 @@ export default function PracticeTestsPage() {
                   </div>
                   <div className="bg-white p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-sm text-gray-900">Reading</span>
+                      <span className="font-medium text-sm text-gray-900">Reading & Writing</span>
                       <span className="text-blue-900 font-bold text-sm">720</span>
                     </div>
                     <div className="w-full bg-gray-50 rounded-full h-1.5">
@@ -188,11 +190,11 @@ export default function PracticeTestsPage() {
                   </div>
                   <div className="bg-white p-4 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors">
                     <div className="flex justify-between items-center mb-2">
-                      <span className="font-medium text-sm text-gray-900">Writing</span>
-                      <span className="text-blue-900 font-bold text-sm">690</span>
+                      <span className="font-medium text-sm text-gray-900">Overall</span>
+                      <span className="text-blue-900 font-bold text-sm">1400</span>
                     </div>
                     <div className="w-full bg-gray-50 rounded-full h-1.5">
-                      <div className="bg-blue-900 h-1.5 rounded-full" style={{ width: "69%" }}></div>
+                      <div className="bg-blue-900 h-1.5 rounded-full" style={{ width: "87.5%" }}></div>
                     </div>
                   </div>
                 </div>
