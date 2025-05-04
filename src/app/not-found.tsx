@@ -29,7 +29,7 @@ export default function NotFound() {
   ]
 
   return (
-    <div className="pt-32 pb-16">
+    <div className="pt-24 pb-16">
       <div className="container mx-auto px-4">
         <Grid noBorder="bottom">
           <GridItem className="py-16 flex items-center justify-center">
