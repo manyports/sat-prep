@@ -49,8 +49,35 @@ export default function TestSelectionPage({ params }: { params: { testId: string
 
   if (loading) {
     return (
-      <div className="bg-white text-black min-h-screen flex items-center justify-center mt-14">
-        <p>Loading test information...</p>
+      <div className="bg-white text-black min-h-screen mt-14">
+        <div className="container mx-auto px-4 py-10">
+          <div className="py-4">
+            <div className="w-40 h-6 bg-gray-200 rounded animate-pulse"></div>
+          </div>
+          <div className="text-center py-10">
+            <div className="w-64 h-8 bg-gray-200 rounded mx-auto mb-3 animate-pulse"></div>
+            <div className="w-32 h-5 bg-gray-200 rounded mx-auto animate-pulse"></div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="border border-gray-100 p-6 rounded-lg shadow-sm">
+                <div className="w-12 h-12 bg-gray-200 rounded-lg mx-auto mb-6 animate-pulse"></div>
+                <div className="w-32 h-6 bg-gray-200 rounded mx-auto mb-4 animate-pulse"></div>
+                <div className="w-48 h-4 bg-gray-200 rounded mx-auto mb-6 animate-pulse"></div>
+                <div className="w-28 h-9 bg-gray-200 rounded mx-auto animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+          <div className="py-10 max-w-lg mx-auto">
+            <div className="w-40 h-6 bg-gray-200 rounded mb-4 animate-pulse"></div>
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="flex items-start gap-3 mb-2">
+                <div className="w-4 h-4 bg-gray-200 rounded-full mt-0.5 animate-pulse"></div>
+                <div className="w-full h-4 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     )
   }

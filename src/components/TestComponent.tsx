@@ -212,33 +212,112 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
 
   if (loading) {
     return (
-      <div className="bg-white min-h-screen flex flex-col items-center justify-center px-4">
-        <div className="w-full max-w-md flex flex-col items-center">
-          <div className="mb-6">
-            <div className="w-12 h-12 rounded-full border-2 border-gray-200">
-              <div className="w-12 h-12 rounded-full border-t-2 border-blue-900 animate-spin"></div>
+      <div className="bg-white text-black min-h-screen flex flex-col pt-20">
+        <div className="w-full h-[0.25vh] flex">
+          {Array(20).fill(0).map((_, i) => (
+            <div key={i} className="h-full grow flex items-center">
+              <div className={`h-full grow ${
+                  i % 4 === 0 ? 'bg-[#009CDE]' : 
+                  i % 4 === 1 ? 'bg-[#FEDB00]' : 
+                  i % 4 === 2 ? 'bg-[#3c3c3c]' : 
+                'bg-[#3350C4]'
+              }`}></div>
+              <div className="w-1 h-full bg-transparent"></div>
             </div>
-          </div>
-          <p className="text-gray-700 text-lg font-medium mb-10">Loading your test</p>
-          <div className="w-full h-1 bg-gray-100 rounded-full mb-10">
-            <div className="h-full bg-blue-900 rounded-full animate-simpleProgress"></div>
-          </div>
-          <div className="w-full space-y-6">
-            <div className="h-5 bg-gray-100 rounded-md w-3/4 mx-auto"></div>
-            <div className="space-y-4 w-full">
-              <div className="h-20 bg-gray-100 rounded-md"></div>
-              <div className="h-12 bg-gray-100 rounded-md"></div>
-              <div className="h-12 bg-gray-100 rounded-md"></div>
-              <div className="h-12 bg-gray-100 rounded-md"></div>
+          ))}
+        </div>
+        <div className="bg-white border-b border-gray-200 py-1 sm:py-2">
+          <div className="container mx-auto px-3 md:px-6">
+            <div className="grid grid-cols-3 items-center h-auto sm:h-14 md:h-16">
+              <div className="col-span-1">
+                <div className="h-5 bg-gray-200 rounded w-48 animate-pulse"></div>
+              </div>
+              <div className="col-span-1 flex flex-col items-center justify-center">
+                <div className="h-6 w-16 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-8 bg-gray-200 rounded-full mt-1 animate-pulse"></div>
+              </div>
+              <div className="col-span-1 flex justify-end space-x-4 sm:space-x-6">
+                <div className="flex flex-col items-center">
+                  <div className="h-5 w-5 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-3 w-12 bg-gray-200 rounded mt-1 animate-pulse"></div>
+                </div>
+                <div className="flex flex-col items-center">
+                  <div className="h-5 w-5 bg-gray-200 rounded animate-pulse"></div>
+                  <div className="h-3 w-12 bg-gray-200 rounded mt-1 animate-pulse"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <style jsx>{`
-          @keyframes simpleProgress {
-            0% { width: 0%; }
-            100% { width: 90%; }
-          }
-        `}</style>
+        <div className="bg-white border-b border-gray-200">
+          <div className="container mx-auto px-3 md:px-6">
+            <div className="py-2 md:py-3">
+              <div className="flex items-center">
+                <div className="h-4 w-16 bg-gray-200 rounded animate-pulse"></div>
+                <div className="h-4 w-4 ml-1 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-grow">
+          <div className="container mx-auto px-3 md:px-6 h-full">
+            <div className="flex flex-col md:flex-row h-full">
+              <div className="w-full md:w-1/2 border-b md:border-b-0 md:border-r border-gray-200 py-3 md:py-6 px-3 md:px-6 md:pr-8 overflow-y-auto h-[40vh] md:h-full">
+                <div className="space-y-4">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                  ))}
+                  <div className="h-4 bg-gray-200 rounded w-3/4 animate-pulse"></div>
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i+5} className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                  ))}
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 py-3 md:py-6 px-3 md:px-6 md:pl-8 overflow-y-auto h-[calc(60vh-10rem)] md:h-full">
+                <div className="flex items-center mb-4">
+                  <div className="h-8 w-8 bg-gray-900 rounded animate-pulse"></div>
+                  <div className="h-5 w-28 bg-gray-200 rounded ml-3 animate-pulse"></div>
+                  <div className="ml-auto h-7 w-7 bg-gray-200 rounded animate-pulse"></div>
+                </div>
+                <div className="w-full flex mb-4">
+                  {Array(15).fill(0).map((_, i) => (
+                    <div key={i} className="h-[2px] grow flex items-center">
+                      <div className={`h-full grow ${
+                        i % 4 === 0 ? 'bg-[#009CDE]' : 
+                        i % 4 === 1 ? 'bg-[#FEDB00]' : 
+                        i % 4 === 2 ? 'bg-[#3c3c3c]' : 
+                        'bg-[#3350C4]'
+                      }`}></div>
+                      <div className="w-1 h-full bg-transparent"></div>
+                    </div>
+                  ))}
+                </div>
+                <div className="h-24 bg-gray-200 rounded mb-6 animate-pulse"></div>
+                <div className="space-y-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="h-12 bg-gray-200 rounded animate-pulse"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white border-t border-gray-200 py-3 md:py-4">
+          <div className="container mx-auto px-3 md:px-6">
+            <div className="flex items-center justify-between">
+              <div className="flex-1 hidden md:block">
+                <div className="h-5 w-24 bg-gray-200 rounded animate-pulse"></div>
+              </div>
+              <div className="flex-1 flex justify-center">
+                <div className="h-8 w-32 bg-gray-900 rounded animate-pulse"></div>
+              </div>
+              <div className="flex-1 flex justify-end space-x-2">
+                <div className="h-8 w-20 bg-blue-800 rounded-full animate-pulse"></div>
+                <div className="h-8 w-16 bg-blue-800 rounded-full animate-pulse"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
