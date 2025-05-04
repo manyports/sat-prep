@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Grid, GridItem } from "@/components/grid"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ChevronLeft, BookmarkIcon, MoreVertical, Pencil, CheckCircle, Circle, ChevronDown, Clock, BookOpen, Type } from "lucide-react"
+import { ArrowLeft, ChevronLeft, BookmarkIcon, MoreVertical, Pencil, ChevronDown, Clock } from "lucide-react"
 
 interface Question {
   id: string;
