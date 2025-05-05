@@ -34,14 +34,14 @@ export function Grid({
     >
       {!hideDecorators && (
         <>
-          <div className="absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] w-3 h-3 bg-white z-10 flex items-center justify-center">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="absolute top-0 left-0 translate-x-[-50%] translate-y-[-50%] w-5 h-5 z-10 flex items-center justify-center">
+            <svg width="15" height="15" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 2V10" stroke="#D1D5DB" strokeWidth="1.5" strokeLinecap="round" />
               <path d="M2 6H10" stroke="#D1D5DB" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </div>
-          <div className="absolute bottom-0 right-0 translate-x-[50%] translate-y-[50%] w-3 h-3 bg-white z-10 flex items-center justify-center">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className="absolute bottom-0 right-0 translate-x-[50%] translate-y-[50%] w-5 h-5 z-10 flex items-center justify-center">
+            <svg width="15" height="15" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M6 2V10" stroke="#D1D5DB" strokeWidth="1.5" strokeLinecap="round" />
               <path d="M2 6H10" stroke="#D1D5DB" strokeWidth="1.5" strokeLinecap="round" />
             </svg>

@@ -2,11 +2,14 @@
 
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { MenuIcon, X } from "lucide-react"
+import { MenuIcon, X, User, LogOut } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useSession, signOut } from 'next-auth/react'
 
 export function Header() {
+  const { data: session, status } = useSession()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   
   useEffect(() => {
@@ -33,6 +36,25 @@ export function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isProfileMenuOpen && !target.closest('[data-profile-menu]')) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isProfileMenuOpen]);
+
+  const handleSignOut = async () => {
+    setIsProfileMenuOpen(false);
+    await signOut({ redirect: true, callbackUrl: '/auth/signout' });
+  };
 
   const navItems = [
     { name: "Question Bank", href: "/questions" },
@@ -65,12 +87,56 @@ export function Header() {
               ))}
             </nav>
             <div className="hidden md:flex items-center">
-              <Link href="/login" className="mr-8 text-[14px] text-[#111827] hover:text-[#0a2472] font-medium tracking-wide transition-colors duration-200">
-                Log in
-              </Link>
-              <Link href="/signup" className="text-[14px] bg-[#0a2472] hover:bg-[#061a54] text-white px-5 py-2.5 font-medium tracking-wide transition-colors duration-200">
-                Sign up
-              </Link>
+              {status === 'authenticated' ? (
+                <div className="relative" data-profile-menu>
+                  <button 
+                    className="flex items-center space-x-2"
+                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                  >
+                    <div className="w-9 h-9 bg-[#0a2472] rounded-full flex items-center justify-center text-white">
+                      <span className="text-sm font-semibold">
+                        {session.user?.name?.charAt(0).toUpperCase() || 'U'}
+                      </span>
+                    </div>
+                    <span className="text-[14px] font-medium text-[#111827]">
+                      {session.user?.name?.split(' ')[0] || 'User'}
+                    </span>
+                  </button>
+                  
+                  {isProfileMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-10">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{session.user?.name}</p>
+                        <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
+                      </div>
+                      <Link 
+                        href="/profile" 
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsProfileMenuOpen(false)}
+                      >
+                        <User className="h-4 w-4 mr-2 text-gray-500" />
+                        Your Profile
+                      </Link>
+                      <button 
+                        className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={handleSignOut}
+                      >
+                        <LogOut className="h-4 w-4 mr-2 text-gray-500" />
+                        Sign out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link href="/auth/signin" className="mr-8 text-[14px] text-[#111827] hover:text-[#0a2472] font-medium tracking-wide transition-colors duration-200">
+                    Log in
+                  </Link>
+                  <Link href="/auth/signup" className="text-[14px] bg-[#0a2472] hover:bg-[#061a54] text-white px-5 py-2.5 font-medium tracking-wide transition-colors duration-200">
+                    Sign up
+                  </Link>
+                </>
+              )}
             </div>
             <button 
               className="flex md:hidden items-center justify-center w-10 h-10"
@@ -140,22 +206,43 @@ export function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.5 }}
               >
-                <div className="flex flex-col space-y-6 items-start">
-                  <Link
-                    href="/login"
-                    className="text-[#111827] hover:text-[#0a2472] text-[17px] font-medium transition-colors duration-200" 
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Log in
-                  </Link>
-                  <Link
-                    href="/signup"
-                    className="bg-[#0a2472] hover:bg-[#061a54] text-white px-5 py-2.5 text-[15px] font-medium tracking-wide transition-colors duration-200" 
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    Sign up
-                  </Link>
-                </div>
+                {status === 'authenticated' ? (
+                  <div className="flex flex-col space-y-6 items-start">
+                    <Link
+                      href="/profile"
+                      className="text-[#111827] hover:text-[#0a2472] text-[17px] font-medium transition-colors duration-200" 
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        signOut({ redirect: true, callbackUrl: '/auth/signout' });
+                      }}
+                      className="bg-[#0a2472] hover:bg-[#061a54] text-white px-5 py-2.5 text-[15px] font-medium tracking-wide transition-colors duration-200" 
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-6 items-start">
+                    <Link
+                      href="/auth/signin"
+                      className="text-[#111827] hover:text-[#0a2472] text-[17px] font-medium transition-colors duration-200" 
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      href="/auth/signup"
+                      className="bg-[#0a2472] hover:bg-[#061a54] text-white px-5 py-2.5 text-[15px] font-medium tracking-wide transition-colors duration-200" 
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                )}
               </motion.div>
             </div>
           </motion.div>
