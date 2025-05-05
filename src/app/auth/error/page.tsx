@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Grid, GridItem } from "@/components/grid";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, ArrowLeft } from "lucide-react";
+import { AlertCircle, ArrowLeft, Loader2 } from "lucide-react";
 
-export default function AuthError() {
+function ErrorContent() {
   const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
 
@@ -123,5 +123,24 @@ export default function AuthError() {
         </Grid>
       </div>
     </div>
+  );
+}
+
+function ErrorContentFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+      <div className="flex flex-col items-center">
+        <Loader2 className="h-8 w-8 text-blue-900 animate-spin mb-4" />
+        <p className="text-gray-600">Loading error information...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function AuthError() {
+  return (
+    <Suspense fallback={<ErrorContentFallback />}>
+      <ErrorContent />
+    </Suspense>
   );
 } 
