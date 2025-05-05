@@ -1,0 +1,12 @@
+{
+  "name": "sat-prep-parsers",
+  "version": "1.0.0",
+  "description": "PDF parsers for SAT prep materials",
+  "main": "parseEnglishPdfs.js",
+  "scripts": {
+    "parse": "node parseEnglishPdfs.js"
+  },
+  "dependencies": {
+    "pdf-parse": "^1.1.1"
+  }
+} 
