@@ -35,7 +35,7 @@ export function Header() {
   }, [])
 
   const navItems = [
-    { name: "Questions", href: "/questions" },
+    { name: "Question Bank", href: "/questions" },
     { name: "Practice Tests", href: "/practice-tests" },
     { name: "My Class", href: "/assignments" },
     { name: "Pricing", href: "/pricing" },
