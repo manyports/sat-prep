@@ -248,10 +248,10 @@ export default function LandingPage() {
           </GridItem>
           <GridItem className="flex flex-col h-full">
             <div>
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Ultimate</h3>
+              <h3 className="text-xl font-bold mb-2 text-gray-900">Pro</h3>
               <p className="text-gray-600 mb-6">For maximum results</p>
               <p className="text-4xl font-bold mb-6 text-gray-900">
-                $29<span className="text-gray-500 text-lg font-normal">/month</span>
+                $39<span className="text-gray-500 text-lg font-normal">/month</span>
               </p>
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-2 text-gray-600">
