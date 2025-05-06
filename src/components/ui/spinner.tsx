@@ -7,9 +7,6 @@ interface SpinnerProps {
   label?: string;
 }
 
-/**
- * iOS-style spinner component for loading states
- */
 export function Spinner({ 
   size = 'md', 
   color = 'currentColor',
