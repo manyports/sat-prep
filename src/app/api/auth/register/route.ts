@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import User from '@/models/User';
 
 export async function POST(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {

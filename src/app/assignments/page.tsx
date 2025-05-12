@@ -43,7 +43,7 @@ export default function ClassesPage() {
 
       const data = await response.json();
       if (data.success) {
-        await fetchClasses(); // Refresh the classes list
+        await fetchClasses(); 
         setShowJoinError(false);
         setJoinCode("");
         setShowJoinModal(false);

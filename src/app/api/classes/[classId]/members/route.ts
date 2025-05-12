@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import User from '@/models/User';
 import mongoose from 'mongoose';
@@ -57,7 +57,7 @@ export async function POST(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findById(classId);
     if (!classData) {
@@ -162,7 +162,7 @@ export async function DELETE(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findById(classId);
     if (!classData) {

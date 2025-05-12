@@ -10,6 +10,15 @@ const config: Config = {
   theme: {
   	extend: {
   		fontFamily: {
+            sans: [
+                'var(--font-geist-sans)',
+                'system-ui',
+                'sans-serif'
+            ],
+            mono: [
+                'var(--font-geist-mono)',
+                'monospace'
+            ],
   			'noto-serif': [
   				'var(--font-noto-serif)',
   				'serif'

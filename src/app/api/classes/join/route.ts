@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import mongoose from 'mongoose';
 
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findOne({
       invitationCode,

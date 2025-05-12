@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import mongoose from 'mongoose';
 
@@ -24,7 +24,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid role' }, { status: 400 });
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findOne({
       _id: new mongoose.Types.ObjectId(classId),

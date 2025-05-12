@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import Class, { IClass } from '@/models/Class';
 import mongoose from 'mongoose';
 import { IUser } from '@/models/User';
@@ -50,7 +50,7 @@ export async function GET(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     
     const classData = await Class.findOne({
       _id: params.classId,
@@ -129,7 +129,7 @@ export async function PUT(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     
     const classData = await Class.findOne({
       _id: params.classId,
@@ -209,7 +209,7 @@ export async function DELETE(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     
     const classData = await Class.findOne({
       _id: params.classId,

@@ -4,57 +4,56 @@
   "duration": "3 hours 15 minutes",
   "sections": [
     {
-      "id": "reading",
+      "id": "section-1",
       "title": "Reading & Writing",
       "duration": "64 minutes",
       "questions": [
         {
-          "id": "r1",
-          "text": "The passage suggests that the main reason the narrator initially visits the lake is to",
+          "id": "q1",
+          "text": "If x + y = 10 and x - y = 4, what is the value of x?",
           "options": [
             {
-              "id": "r1-a",
-              "text": "revisit a place that was important to her childhood"
+              "id": "a",
+              "text": "3"
             },
             {
-              "id": "r1-b",
-              "text": "introduce her own children to a natural setting"
+              "id": "b",
+              "text": "5"
             },
             {
-              "id": "r1-c",
-              "text": "gather data about changes in the environment"
+              "id": "c",
+              "text": "7"
             },
             {
-              "id": "r1-d",
-              "text": "conduct research for an academic paper"
+              "id": "d",
+              "text": "9"
             }
           ],
-          "correctAnswer": "r1-b",
-          "passage": "When I returned to the lake after twenty years, I was struck by how little had changed. The water still lapped gently at the shore, the pine trees still swayed in the breeze, and the mountains still reflected in the water's surface. Yet something was different—not in the landscape, but in me. I had brought my children here to show them the place that had meant so much to me as a child, but I found myself seeing it through new eyes. No longer was I the carefree child skipping stones and chasing butterflies; I was now the parent watching carefully as my own children discovered the wonders of nature for themselves. In that moment, I understood that while the lake had remained constant, I had been transformed by the passing years and the responsibilities of adulthood."
+          "correctAnswer": "c"
         },
         {
-          "id": "r2",
-          "text": "In the context of the passage, the word \"constant\" most nearly means",
+          "id": "q2",
+          "text": "What is the main idea of the passage?",
           "options": [
             {
-              "id": "r2-a",
-              "text": "persistent"
+              "id": "a",
+              "text": "The author describes a personal experience with nature that led to a profound realization"
             },
             {
-              "id": "r2-b",
-              "text": "unchanged"
+              "id": "b",
+              "text": "The text explores scientific concepts related to environmental conservation"
             },
             {
-              "id": "r2-c",
-              "text": "continuous"
+              "id": "c",
+              "text": "The passage presents historical events that shaped modern ecology"
             },
             {
-              "id": "r2-d",
-              "text": "reliable"
+              "id": "d",
+              "text": "The narrative discusses cultural trends in environmental awareness"
             }
           ],
-          "correctAnswer": "r2-b",
-          "passage": null
+          "correctAnswer": "a",
+          "passage": "As I wandered through the ancient forest that morning, the mist still clinging to the moss-covered trees, I felt a sense of connection I had never experienced before. The silence was profound, broken only by occasional birdsong and the soft crunch of leaves beneath my feet. It was in this moment of solitude that I began to understand our place in the natural world—not as conquerors or even caretakers, but as participants in something far greater than ourselves. The forest didn't need me, yet it welcomed my presence, indifferent yet inclusive. This paradox struck me as the very essence of our relationship with the natural world."
         },
         {
           "id": "r3",

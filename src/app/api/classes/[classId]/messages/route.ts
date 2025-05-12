@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import Message from '@/models/Message';
 import mongoose from 'mongoose';
@@ -20,7 +20,7 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid class ID' }, { status: 400 });
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findById(classId);
     if (!classData) {
@@ -36,34 +36,59 @@ export async function GET(
 
     const { searchParams } = new URL(request.url);
     const channel = searchParams.get('channel') || 'general';
+    const before = searchParams.get('before') || null;
+    const limit = parseInt(searchParams.get('limit') || '10', 10); 
 
-    const messages = await Message.find({ class: classId, channel })
+    const query: any = { class: classId, channel };
+    if (before) {
+      query._id = { $lt: new mongoose.Types.ObjectId(before) };
+    }
+
+    const messages = await Message.find(query)
       .populate('sender', 'name email image')
-      .sort({ createdAt: 1 })
-      .limit(50);
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+
+    const hasMore = messages.length === limit;
+    
+    let oldestId = null;
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage && typeof lastMessage === 'object' && lastMessage._id) {
+        oldestId = lastMessage._id.toString();
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      messages: messages.map(msg => ({
-        _id: msg._id.toString(),
-        content: msg.content,
-        sender: {
-          _id: msg.sender._id.toString(),
-          name: msg.sender.name,
-          email: msg.sender.email,
-          image: msg.sender.image
-        },
-        channel: msg.channel,
-        createdAt: msg.createdAt,
-        updatedAt: msg.updatedAt,
-        assignment: msg.assignment ? {
-          _id: msg.assignment._id.toString(),
-          title: msg.assignment.title,
-          description: msg.assignment.description,
-          dueDate: msg.assignment.dueDate,
-          type: msg.assignment.type
-        } : undefined
-      }))
+      messages: messages.map(msg => {
+        const sender = msg.sender || {};
+        const assignment = msg.assignment;
+        
+        return {
+          _id: msg._id ? msg._id.toString() : '',
+          content: msg.content || '',
+          sender: {
+            _id: sender._id ? sender._id.toString() : '',
+            name: sender.name || '',
+            email: sender.email || '',
+            image: sender.image
+          },
+          channel: msg.channel || '',
+          createdAt: msg.createdAt,
+          updatedAt: msg.updatedAt,
+          assignment: assignment ? {
+            _id: assignment._id ? assignment._id.toString() : '',
+            title: assignment.title || '',
+            description: assignment.description || '',
+            dueDate: assignment.dueDate || '',
+            type: assignment.type || ''
+          } : undefined
+        };
+      }),
+      hasMore,
+      oldestId
     });
   } catch (error) {
     console.error('Error fetching messages:', error);
@@ -97,7 +122,7 @@ export async function POST(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findById(classId);
     if (!classData) {

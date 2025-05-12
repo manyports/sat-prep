@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import User from '@/models/User';
 
 export async function PUT(request: NextRequest) {
@@ -16,7 +16,7 @@ export async function PUT(request: NextRequest) {
 
     const preferences = await request.json();
 
-    await connectToDatabase();
+    await connectToMongoose();
     
     const user = await User.findById(session.user.id);
     

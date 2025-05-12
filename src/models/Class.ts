@@ -12,6 +12,7 @@ export interface IClass extends Document {
   updatedAt: Date;
   generateInvitationCode: () => Promise<{ code: string; expires: Date }>;
   revokeInvitationCode: () => Promise<void>;
+  channels: string[];
 }
 
 const ClassSchema = new Schema<IClass>(
@@ -43,6 +44,10 @@ const ClassSchema = new Schema<IClass>(
     invitationCodeExpires: {
       type: Date,
     },
+    channels: {
+      type: [String],
+      default: ['general', 'assignments', 'questions']
+    }
   },
   {
     timestamps: true,

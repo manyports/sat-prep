@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 
@@ -24,7 +24,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     const user = await User.findById(session.user.id);
     
     if (!user) {

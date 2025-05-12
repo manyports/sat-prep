@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import User from '@/models/User';
 
 export async function GET(request: NextRequest) {
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     const user = await User.findById(session.user.id);
     
     if (!user) {
@@ -63,7 +63,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     
     const existingUserWithEmail = await User.findOne({ 
       email, 
@@ -119,7 +119,7 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
     
     const deletedUser = await User.findByIdAndDelete(session.user.id);
     

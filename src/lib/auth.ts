@@ -1,6 +1,6 @@
 import { NextAuthOptions, getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 
@@ -28,6 +28,10 @@ declare module "next-auth/jwt" {
   }
 }
 
+let cachedSession: any = null;
+let cachedSessionExpiry: number | null = null;
+const SESSION_CACHE_DURATION = 1000 * 60 * 5;
+
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -42,7 +46,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          await connectToDatabase();
+          const { db } = await connectToMongoose();
 
           const user = await User.findOne({ email: credentials.email }).select('+password');
           
@@ -104,4 +108,16 @@ export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export const getAuth = () => getServerSession(authOptions); 
+export const getAuth = async () => {
+  const now = Date.now();
+  if (cachedSession && cachedSessionExpiry && now < cachedSessionExpiry) {
+    return cachedSession;
+  }
+  
+  const session = await getServerSession(authOptions);
+  
+  cachedSession = session;
+  cachedSessionExpiry = now + SESSION_CACHE_DURATION;
+  
+  return session;
+}; 

@@ -39,9 +39,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${notoSerif.variable} antialiased min-h-screen flex flex-col`}
       >
         <AuthProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
+            <Header />
+            <main>{children}</main>
+            <Footer />
         </AuthProvider>
       </body>
     </html>

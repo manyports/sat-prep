@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuth } from '@/lib/auth';
-import connectToDatabase from '@/lib/mongodb';
+import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import mongoose, { Types } from 'mongoose';
 
@@ -19,7 +19,7 @@ export async function POST(
       return NextResponse.json({ error: 'Invalid class ID' }, { status: 400 });
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findOne({
       _id: new Types.ObjectId(classId),
@@ -102,7 +102,7 @@ export async function PUT(
       );
     }
 
-    await connectToDatabase();
+    await connectToMongoose();
 
     const classData = await Class.findOne({
       _id: new Types.ObjectId(classId),
