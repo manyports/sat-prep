@@ -455,31 +455,60 @@ export default function ClassPage() {
   const sendMessage = async () => {
     if (chatInput.trim() === "") return
     
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const optimisticMessage: Message = {
+      _id: tempId,
+      content: chatInput.trim(),
+      sender: {
+        _id: session?.user?.id || 'unknown',
+        name: session?.user?.name || 'Unknown User',
+        email: session?.user?.email || '',
+        image: session?.user?.image || undefined,
+      },
+      channel: activeChannel,
+      createdAt: new Date().toISOString(),
+    };
+    
+    setMessages(prev => [...prev, optimisticMessage]);
+    setChatInput("");
+    setTimeout(() => scrollToBottom(), 100);
+    
     try {
+      console.log('Sending message to server:', {
+        content: optimisticMessage.content,
+        channel: activeChannel
+      });
+      
       const response = await fetch(`/api/classes/${classId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          content: chatInput.trim(),
+          content: optimisticMessage.content,
           channel: activeChannel,
         }),
       });
 
+      const responseData = await response.json();
+      console.log('Server response:', responseData);
+
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error(`Failed to send message: ${responseData.error || 'Unknown error'}`);
       }
 
-      const { success, message } = await response.json();
-      if (success && message) {
-        setMessages(prev => [...prev, message]);
-        setChatInput("");
-        setTimeout(() => scrollToBottom(), 100);
+      if (responseData.success && responseData.message) {
+        console.log('Message saved successfully');
+        setMessages(prev => prev.map(msg => 
+          msg._id === tempId ? responseData.message : msg
+        ));
       } else {
         throw new Error('Invalid response format');
       }
     } catch (error) {
+      console.error('Error sending message:', error);
+      setMessages(prev => prev.filter(msg => msg._id !== tempId));
+      
       toast({
         title: 'Error',
         description: 'Failed to send message',
@@ -501,7 +530,7 @@ export default function ClassPage() {
       
       let oldestId = null;
       if (loadMore && messages.length > 0) {
-        oldestId = messages[messages.length - 1]._id;
+        oldestId = messages[0]._id;
       }
       
       const url = `/api/classes/${classId}/messages?channel=${activeChannel}&limit=10${oldestId ? `&before=${oldestId}` : ''}`;
@@ -519,18 +548,20 @@ export default function ClassPage() {
       if (data.success && Array.isArray(data.messages)) {
         console.log("Received messages:", data.messages.length);
         
+        const chronologicalMessages = [...data.messages].reverse();
+        
         if (loadMore) {
           const existingIds = new Set(messages.map(m => m._id));
-          const messagesArray = data.messages as Message[];
+          const messagesArray = chronologicalMessages;
           const uniqueNewMessages = messagesArray.filter(msg => !existingIds.has(msg._id));
           
           console.log("Unique new messages:", uniqueNewMessages.length);
           
           if (uniqueNewMessages.length > 0) {
-            setMessages(prev => [...prev, ...uniqueNewMessages]);
+            setMessages(prev => [...uniqueNewMessages, ...prev]);
           }
         } else {
-          setMessages(data.messages as Message[]);
+          setMessages(chronologicalMessages);
         }
         
         setHasMoreMessages(data.hasMore);
@@ -578,6 +609,29 @@ export default function ClassPage() {
   
   const sendTestMessage = async (content: string) => {
     try {
+      const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+      const optimisticMessage: Message = {
+        _id: tempId,
+        content,
+        sender: {
+          _id: session?.user?.id || 'unknown',
+          name: session?.user?.name || 'Unknown User',
+          email: session?.user?.email || '',
+          image: session?.user?.image || undefined,
+        },
+        channel: activeChannel,
+        createdAt: new Date().toISOString(),
+      };
+      
+      setMessages(prev => [...prev, optimisticMessage]);
+      scrollToBottom();
+      
+      console.log('Sending test message to server:', {
+        content,
+        channel: activeChannel,
+        type: 'test'
+      });
+      
       const response = await fetch(`/api/classes/${classId}/messages`, {
         method: 'POST',
         headers: {
@@ -590,28 +644,31 @@ export default function ClassPage() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
+      const responseData = await response.json();
+      console.log('Server test message response:', responseData);
 
-      const newMessage: Message = {
-        _id: Date.now().toString(),
-        content,
-        sender: {
-          _id: session?.user?.id || 'unknown',
-          name: session?.user?.name || 'Unknown User',
-          email: session?.user?.email || '',
-          image: session?.user?.image || undefined,
-        },
-        channel: activeChannel,
-        createdAt: new Date().toISOString(),
-      };
+      if (!response.ok) {
+        throw new Error(`Failed to send test message: ${responseData.error || 'Unknown error'}`);
+      }
       
-      setMessages(prev => [...prev, newMessage]);
-      setChatInput('');
-      scrollToBottom();
+      if (responseData.success && responseData.message) {
+        console.log('Test message saved successfully');
+        setMessages(prev => prev.map(msg => 
+          msg._id === tempId ? responseData.message : msg
+        ));
+      } else {
+        throw new Error('Invalid response format');
+      }
     } catch (error) {
       console.error('Error sending test message:', error);
+      
+      setMessages(prev => prev.filter(msg => !msg._id.startsWith('temp-')));
+      
+      toast({
+        title: 'Error',
+        description: 'Failed to send test message',
+        variant: 'destructive',
+      });
     }
   }
   
@@ -663,8 +720,40 @@ export default function ClassPage() {
           
           const content = JSON.stringify(testEmbed);
           
+          const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+          const optimisticMessage: Message = {
+            _id: tempId,
+            content,
+            sender: {
+              _id: session?.user?.id || 'unknown',
+              name: session?.user?.name || 'Unknown User',
+              email: session?.user?.email || '',
+              image: session?.user?.image || undefined,
+            },
+            channel: channel,
+            createdAt: new Date().toISOString(),
+          };
+          
+          if (channel !== activeChannel) {
+            setActiveChannel(channel);
+          }
+          
+          setMessages(prev => [...prev, optimisticMessage]);
+          
+          setTimeout(() => {
+            if (chatEndRef.current) {
+              chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+          }, 100);
+          
           (async () => {
             try {
+              console.log('Embedding test from session storage:', {
+                content,
+                channel,
+                type: 'test'
+              });
+              
               const response = await fetch(`/api/classes/${classId}/messages`, {
                 method: 'POST',
                 headers: {
@@ -677,36 +766,31 @@ export default function ClassPage() {
                 }),
               });
               
+              const responseData = await response.json();
+              console.log('Server response for session storage test:', responseData);
+              
               if (!response.ok) {
-                throw new Error('Failed to send message');
+                throw new Error(`Failed to send message: ${responseData.error || 'Unknown error'}`);
               }
               
-              const newMessage: Message = {
-                _id: Date.now().toString(),
-                content,
-                sender: {
-                  _id: session?.user?.id || 'unknown',
-                  name: session?.user?.name || 'Unknown User',
-                  email: session?.user?.email || '',
-                  image: session?.user?.image || undefined,
-                },
-                channel: channel,
-                createdAt: new Date().toISOString(),
-              };
-              
-              if (channel !== activeChannel) {
-                setActiveChannel(channel);
+              if (responseData.success && responseData.message) {
+                console.log('Session storage test saved successfully');
+                setMessages(prev => prev.map(msg => 
+                  msg._id === tempId ? responseData.message : msg
+                ));
+              } else {
+                throw new Error('Invalid response format');
               }
-              
-              setMessages(prev => [...prev, newMessage]);
-              
-              setTimeout(() => {
-                if (chatEndRef.current) {
-                  chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-                }
-              }, 100);
             } catch (error) {
-              console.error('Error sending test message:', error);
+              console.error('Error sending test message from session:', error);
+              
+              setMessages(prev => prev.filter(msg => msg._id !== tempId));
+              
+              toast({
+                title: 'Error',
+                description: 'Failed to send test message',
+                variant: 'destructive',
+              });
             }
           })();
           
@@ -719,7 +803,7 @@ export default function ClassPage() {
   }, [classId, activeChannel, session]);
 
   const memoizedMessages = useMemo(() => {
-    return [...messages].reverse().map((message) => (
+    return messages.map((message) => (
       <div key={message._id} className="flex items-start gap-2 md:gap-3 mb-4">
         <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-blue-100 flex items-center justify-center text-xs font-semibold text-blue-900 flex-shrink-0">
           {getInitials(message.sender.name)}
@@ -1100,6 +1184,8 @@ export default function ClassPage() {
   };
   
   const embedTestInChat = async (test: Test) => {
+    const tempId = `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    
     try {
       const uniqueTestId = `${test.id}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
       
@@ -1115,12 +1201,68 @@ export default function ClassPage() {
       
       const content = JSON.stringify(testEmbed);
       
-      await sendTestMessage(content);
+      const optimisticMessage: Message = {
+        _id: tempId,
+        content,
+        sender: {
+          _id: session?.user?.id || 'unknown',
+          name: session?.user?.name || 'Unknown User',
+          email: session?.user?.email || '',
+          image: session?.user?.image || undefined,
+        },
+        channel: activeChannel,
+        createdAt: new Date().toISOString(),
+      };
+      
+      setMessages(prev => [...prev, optimisticMessage]);
+      setTimeout(() => scrollToBottom(), 100);
+      
+      console.log('Embedding test in chat:', {
+        content,
+        channel: activeChannel,
+        type: 'test'
+      });
+      
+      const response = await fetch(`/api/classes/${classId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content,
+          channel: activeChannel,
+          type: 'test'
+        }),
+      });
+
+      const responseData = await response.json();
+      console.log('Server response for test embed:', responseData);
+
+      if (!response.ok) {
+        throw new Error(`Failed to embed test: ${responseData.error || 'Unknown error'}`);
+      }
+      
+      if (responseData.success && responseData.message) {
+        console.log('Test embed saved successfully');
+        setMessages(prev => prev.map(msg => 
+          msg._id === tempId ? responseData.message : msg
+        ));
+      } else {
+        throw new Error('Invalid response format');
+      }
       
       setShowTestSelection(false);
       setSelectedTest(null);
     } catch (error) {
       console.error('Error embedding test:', error);
+      
+      setMessages(prev => prev.filter(msg => msg._id !== tempId));
+      
+      toast({
+        title: 'Error',
+        description: 'Failed to embed test in chat',
+        variant: 'destructive',
+      });
     }
   };
   
