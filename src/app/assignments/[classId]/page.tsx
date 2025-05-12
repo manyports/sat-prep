@@ -1758,15 +1758,17 @@ export default function ClassPage() {
             </div>
             <div className="px-2 md:px-4 pb-2 md:pb-4">
               <div className="bg-gray-50 rounded-lg border border-gray-200">
-                <div className="px-2 md:px-3 py-2 flex">
+                <div className="px-2 md:px-3 py-2 flex justify-between items-center">
                   {isUserInstructor() && (
                     <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-7 w-7 md:h-8 md:w-8 text-gray-500 hover:bg-gray-100 rounded-full"
+                      variant="secondary"
+                      size="sm"
+                      className="bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 flex items-center gap-1.5 h-8 shadow-sm transition-all hover:shadow"
                       onClick={() => router.push(`/assignments/${classId}/test-selection?channel=${activeChannel}`)}
                     >
-                      <Plus className="h-4 w-4" />
+                      <FileText className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">Add a test</span>
+                      <Plus className="h-3 w-3 ml-0.5" />
                     </Button>
                   )}
                 </div>
@@ -1792,8 +1794,16 @@ export default function ClassPage() {
                     )}
                   </div>
                 </div>
-                <div className="px-3 md:px-4 py-1.5 md:py-2 text-xs text-gray-500 border-t border-gray-100">
-                  Press Enter to send
+                <div className="px-3 md:px-4 py-2 text-xs text-gray-500 border-t border-gray-100 flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <span className="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">Enter</span>
+                    <span>to send</span>
+                  </div>
+                  <span className="text-gray-300">•</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">Shift + Enter</span>
+                    <span>for new line</span>
+                  </div>
                 </div>
               </div>
             </div>

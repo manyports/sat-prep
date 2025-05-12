@@ -82,7 +82,6 @@ export async function GET(
       }
     } catch (e) {
       console.error("Error parsing ObjectId, trying with string ID:", e);
-      // If ObjectId parsing fails, try with string ID
       test = await db.collection('tests').findOne({
         $or: [
           { id: testId, classId: classId },
