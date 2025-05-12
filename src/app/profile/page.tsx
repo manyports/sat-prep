@@ -295,7 +295,7 @@ export default function Profile() {
           <GridItem>
             <h1 className="text-3xl font-bold mb-1 text-gray-900">Your Profile</h1>
             <p className="text-gray-600 mb-8">Manage your account details and settings</p>
-            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start mb-12">
+            <div className="flex flex-col md:flex-row gap-6 items-center md:items-start mb-12 text-center md:text-left">
               <div className="w-24 h-24 bg-blue-900 rounded-full flex items-center justify-center text-white">
                 <span className="text-3xl font-bold">{firstLetter}</span>
               </div>
