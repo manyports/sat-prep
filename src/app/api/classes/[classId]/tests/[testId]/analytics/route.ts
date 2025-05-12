@@ -105,7 +105,6 @@ async function generateRealAnalytics(test: any, testResults: any[]) {
       medianScore: 0,
       highestScore: 0,
       lowestScore: 0,
-      averageTimeSpent: 0,
       questionAnalytics: (test.questions || []).map((q: any, index: number) => ({
         questionId: q.id || `q-${index}`,
         questionText: q.text || 'No question text',
@@ -172,21 +171,6 @@ async function generateRealAnalytics(test: any, testResults: any[]) {
     const score = result.score || 0
     const totalPossible = result.totalCount || test.questions?.length || 1
 
-    let timeSpent = 0;
-    try {
-      if (result.timeSpent !== undefined && result.timeSpent !== null) {
-        if (typeof result.timeSpent === 'number') {
-          timeSpent = result.timeSpent;
-        } else if (typeof result.timeSpent === 'string') {
-          timeSpent = parseInt(result.timeSpent, 10) || 0;
-        }
-      }
-    } catch (error) {
-      console.error('Error converting timeSpent:', error);
-    }
-    
-    console.log(`📊 FIXED: Processing timeSpent for student: ${result.userId}, timeSpent: ${timeSpent} (original: ${result.timeSpent}, type: ${typeof result.timeSpent})`);
-    
     let studentName = 'Student';
     try {
       if (result.userId) {
@@ -216,8 +200,7 @@ async function generateRealAnalytics(test: any, testResults: any[]) {
       answers,
       score,
       totalPossible,
-      completedAt: result.completedAt || result.createdAt || new Date().toISOString(),
-      timeSpent 
+      completedAt: result.completedAt || result.createdAt || new Date().toISOString()
     }
   }))
   
@@ -225,7 +208,6 @@ async function generateRealAnalytics(test: any, testResults: any[]) {
   let medianScore = 0
   let highestScore = 0
   let lowestScore = 1
-  let averageTimeSpent = 0
   
   if (totalStudents > 0) {
     const scores = testResults.map(r => {
@@ -247,9 +229,6 @@ async function generateRealAnalytics(test: any, testResults: any[]) {
     
     highestScore = Math.max(...scores)
     lowestScore = Math.min(...scores)
-    
-    const timeSpents = testResults.map(r => Number(r.timeSpent) || 0)
-    averageTimeSpent = timeSpents.reduce((sum, time) => sum + time, 0) / totalStudents
   }
   
   return {
@@ -260,7 +239,6 @@ async function generateRealAnalytics(test: any, testResults: any[]) {
     medianScore,
     highestScore,
     lowestScore,
-    averageTimeSpent,
     questionAnalytics: questions,
     studentResponses
   }

@@ -69,7 +69,6 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
   const isSectionOnly = Boolean(sectionId);
 
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [timeSpent, setTimeSpent] = useState<number>(0);
 
   useEffect(() => {
     const fetchTest = async () => {
@@ -358,39 +357,14 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
     if (test && !testComplete && !startTime) {
       const now = Date.now();
       setStartTime(now);
-      
-      console.log('⏱️ FIXED: Starting test time tracking at:', new Date(now).toISOString());
-      
-      const interval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - now) / 1000);
-        console.log(`⏱️ DEBUG: Setting timeSpent to ${elapsed} seconds`);
-        setTimeSpent(elapsed);
-        
-        if (elapsed % 30 === 0) {
-          console.log(`⏱️ Time spent: ${elapsed} seconds (${Math.floor(elapsed/60)} minutes)`);
-        }
-      }, 1000);
-      
-      return () => {
-        console.log('⏱️ DEBUG: Cleaning up time tracking interval');
-        clearInterval(interval);
-      };
-    } else {
-      console.log('⏱️ DEBUG: Not starting time tracking.', { 
-        testLoaded: !!test,
-        testComplete, 
-        startTimeSet: !!startTime 
-      });
     }
   }, [test, testComplete, startTime]);
 
   const saveTestResults = async () => {
     if (!test) {
-      console.error('⏱️ DEBUG: No test data available when saving results');
+      console.error('No test data available when saving results');
       return;
     }
-    
-    console.log(`⏱️ DEBUG: Current timeSpent before saving: ${timeSpent} seconds`);
     
     setResultsSaving(true);
     
@@ -404,7 +378,6 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
       }, 0);
       
       const percentageCorrect = Math.round((correctAnswers / totalQuestions) * 100);
-      const estimatedPoints = Math.round((correctAnswers / totalQuestions) * 100);
       
       const classId = localStorage.getItem('currentClassId') || '';
       
@@ -420,9 +393,6 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
       
       const originalTestId = testId.includes('-') ? testId.split('-')[0] : testId;
       
-      const finalTimeSpent = timeSpent;
-      console.log(`⏱️ DEBUG: Final timeSpent for results: ${finalTimeSpent} seconds`);
-      
       const testResults = {
         testId: testId, 
         originalTestId, 
@@ -430,11 +400,8 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
         score: percentageCorrect,
         correctCount: correctAnswers,
         totalCount: totalQuestions,
-        completedAt: new Date().toISOString(),
-        timeSpent: finalTimeSpent 
+        completedAt: new Date().toISOString()
       };
-      
-      console.log('📊 FIXED: Saving test results with time spent:', finalTimeSpent, 'seconds', typeof finalTimeSpent);
       
       const response = await fetch(`/api/classes/${classId}/tests/${testId}/results`, {
         method: 'POST',
@@ -451,7 +418,6 @@ export default function TestComponent({ testId, sectionId }: TestComponentProps)
       const data = await response.json();
       
       if (data.success) {
-        console.log('✅ FIXED: Test results saved successfully with time spent:', finalTimeSpent);
         setResultsSaved(true);
       } else {
         throw new Error(data.error || 'Failed to save test results');

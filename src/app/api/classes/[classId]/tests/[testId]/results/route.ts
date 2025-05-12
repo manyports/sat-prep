@@ -81,9 +81,6 @@ export async function POST(
 
     const data = await req.json();
     
-    console.log('📊 Received test results with time spent:', data.timeSpent, 
-      typeof data.timeSpent === 'number' ? '(is a number)' : `(is ${typeof data.timeSpent})`);
-    
     if (!data.score && data.score !== 0) {
       return NextResponse.json(
         { success: false, error: 'Score is required' },
@@ -99,22 +96,6 @@ export async function POST(
       throw new Error('Database connection failed');
     }
     
-    let timeSpent = 0;
-    try {
-      if (data.timeSpent !== undefined && data.timeSpent !== null) {
-        if (typeof data.timeSpent === 'number') {
-          timeSpent = data.timeSpent;
-        } else if (typeof data.timeSpent === 'string') {
-          timeSpent = parseInt(data.timeSpent, 10) || 0;
-        }
-      }
-      data.timeSpent = timeSpent;
-      console.log('📊 FIXED: Converted timeSpent to:', timeSpent, typeof timeSpent);
-    } catch (error) {
-      console.error('Error converting timeSpent:', error);
-      data.timeSpent = 0;
-    }
-
     const test = await db.collection('tests').findOne({
       $or: [
         { _id: new ObjectId(originalTestId) },

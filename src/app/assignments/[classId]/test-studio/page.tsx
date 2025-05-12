@@ -1233,7 +1233,7 @@ export default function TestStudio() {
                 </div>
               </div>
             </div>
-          ) : ( /* Question editing view - shows different sidebar based on activeSidebar */
+          ) : (
             <div className="flex flex-col md:flex-row h-full">
               <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-gray-200 py-3 md:py-6 px-3 md:px-6 md:pr-8 overflow-y-auto md:h-full">
                 {activeSidebar === 'structure' ? (
