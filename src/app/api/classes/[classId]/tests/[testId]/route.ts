@@ -67,10 +67,29 @@ export async function GET(
       throw new Error('Database connection failed');
     }
     
-    const test = await db.collection('tests').findOne({
-      _id: new ObjectId(testId),
-      classId: classId
-    });
+    let test;
+    try {
+      test = await db.collection('tests').findOne({
+        _id: new ObjectId(testId),
+        classId: classId
+      });
+
+      if (!test) {
+        test = await db.collection('tests').findOne({
+          _id: new ObjectId(testId),
+          createdBy: session.user.id
+        });
+      }
+    } catch (e) {
+      console.error("Error parsing ObjectId, trying with string ID:", e);
+      // If ObjectId parsing fails, try with string ID
+      test = await db.collection('tests').findOne({
+        $or: [
+          { id: testId, classId: classId },
+          { id: testId, createdBy: session.user.id }
+        ]
+      });
+    }
 
     if (!test) {
       return NextResponse.json(

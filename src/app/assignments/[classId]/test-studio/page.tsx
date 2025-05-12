@@ -243,6 +243,8 @@ export default function TestStudio() {
   const imagesRef = useRef<Record<string, QuestionImage[]>>({});
   
   const [debugImages, setDebugImages] = useState<boolean>(false);
+  const [showDebugInfo, setShowDebugInfo] = useState(false);
+  const [isTestFromAnotherClass, setIsTestFromAnotherClass] = useState(false);
   
   useEffect(() => {
     setWindowWidth(window.innerWidth)
@@ -818,7 +820,9 @@ export default function TestStudio() {
       
       console.log('Saving test with images:', JSON.stringify(testData.questions.map(q => q.images)));
       
-      if (testMeta.id && testMeta.id !== "new-test") {
+      const shouldCreateNewTest = testMeta.id === "new-test" || isTestFromAnotherClass;
+      
+      if (!shouldCreateNewTest && testMeta.id) {
         const response = await fetch(`/api/classes/${classId}/tests/${testMeta.id}`, {
           method: 'PUT',
           headers: {
@@ -858,11 +862,14 @@ export default function TestStudio() {
             ...prev,
             id: data.testId
           }));
+          setIsTestFromAnotherClass(false);
         }
         
         toast({
           title: "Success!",
-          description: "Test created successfully with images",
+          description: isTestFromAnotherClass ? 
+            "Test copied successfully to this class" : 
+            "Test created successfully with images",
         });
       }
       
@@ -895,14 +902,28 @@ export default function TestStudio() {
       console.log('Loaded test data:', data);
       
       if (data.success && data.test) {
-        setTestMeta({
-          id: data.test._id || data.test.id,
-          title: data.test.title || '',
-          description: data.test.description || '',
-          timeLimit: data.test.timeLimit || 60,
-          totalPoints: data.test.totalPoints || 100,
-          lastModified: data.test.lastModified || new Date().toISOString().split('T')[0]
-        });
+        setIsTestFromAnotherClass(data.test.classId !== classId);
+        
+        if (data.test.classId !== classId) {
+          console.log('Test is from another class! Will create a copy when saving.');
+          setTestMeta({
+            id: "new-test",
+            title: `${data.test.title} (Copy)`,
+            description: data.test.description || '',
+            timeLimit: data.test.timeLimit || 60,
+            totalPoints: data.test.totalPoints || 100,
+            lastModified: new Date().toISOString().split('T')[0]
+          });
+        } else {
+          setTestMeta({
+            id: data.test._id || data.test.id,
+            title: data.test.title || '',
+            description: data.test.description || '',
+            timeLimit: data.test.timeLimit || 60,
+            totalPoints: data.test.totalPoints || 100,
+            lastModified: data.test.lastModified || new Date().toISOString().split('T')[0]
+          });
+        }
         
         if (data.test.questions && Array.isArray(data.test.questions)) {
           const hasImages = data.test.questions.some((q: any) => q.images && Array.isArray(q.images) && q.images.length > 0);
@@ -1111,21 +1132,27 @@ export default function TestStudio() {
           </div>
           
           <div className="flex items-center space-x-4">
+            {isTestFromAnotherClass && (
+              <div className="bg-amber-50 border border-amber-200 text-amber-800 px-3 py-1 rounded-md text-xs font-medium flex items-center">
+                <AlertTriangle className="h-3.5 w-3.5 mr-1" />
+                From another class - will save as copy
+              </div>
+            )}
             <Button 
-              onClick={saveTest} 
+              onClick={saveTest}
               className="bg-blue-800 hover:bg-blue-700 text-white" 
               disabled={saving}
             >
               {saving ? (
-                <>
-                  <div className="animate-spin h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full"></div>
-                  Saving...
-                </>
+              <>
+                <div className="animate-spin h-4 w-4 mr-2 border-2 border-white border-t-transparent rounded-full"></div>
+                Saving...
+              </>
               ) : (
-                <>
-                  <Save className="h-4 w-4 mr-2" />
-                  Save
-                </>
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Save
+              </>
               )}
             </Button>
           </div>
