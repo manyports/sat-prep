@@ -114,7 +114,7 @@ export async function POST(
       return NextResponse.json({ error: 'Invalid class ID' }, { status: 400 });
     }
 
-    const { content, channel = 'general' } = await request.json();
+    const { content, channel = 'general', senderId } = await request.json();
     if (!content?.trim()) {
       return NextResponse.json(
         { error: 'Message content is required' },
@@ -129,8 +129,10 @@ export async function POST(
       return NextResponse.json({ error: 'Class not found' }, { status: 404 });
     }
 
+    const actualSenderId = senderId || session.user.id;
+    
     const isMember = classData.members.some(
-      (member: mongoose.Types.ObjectId) => member.toString() === session.user.id
+      (member: mongoose.Types.ObjectId) => member.toString() === actualSenderId
     );
     if (!isMember) {
       return NextResponse.json({ error: 'Not a member of this class' }, { status: 403 });
@@ -138,7 +140,7 @@ export async function POST(
 
     const message = await Message.create({
       class: classId,
-      sender: session.user.id,
+      sender: actualSenderId,
       content: content.trim(),
       channel,
     });

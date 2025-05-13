@@ -476,7 +476,8 @@ export default function ClassPage() {
     try {
       console.log('Sending message to server:', {
         content: optimisticMessage.content,
-        channel: activeChannel
+        channel: activeChannel,
+        senderId: session?.user?.id
       });
       
       const response = await fetch(`/api/classes/${classId}/messages`, {
@@ -487,6 +488,7 @@ export default function ClassPage() {
         body: JSON.stringify({
           content: optimisticMessage.content,
           channel: activeChannel,
+          senderId: session?.user?.id
         }),
       });
 
@@ -500,7 +502,7 @@ export default function ClassPage() {
       if (responseData.success && responseData.message) {
         console.log('Message saved successfully');
         setMessages(prev => prev.map(msg => 
-          msg._id === tempId ? responseData.message : msg
+          msg._id === tempId ? { ...responseData.message, sender: msg.sender } : msg
         ));
       } else {
         throw new Error('Invalid response format');
@@ -629,7 +631,8 @@ export default function ClassPage() {
       console.log('Sending test message to server:', {
         content,
         channel: activeChannel,
-        type: 'test'
+        type: 'test',
+        senderId: session?.user?.id
       });
       
       const response = await fetch(`/api/classes/${classId}/messages`, {
@@ -640,7 +643,8 @@ export default function ClassPage() {
         body: JSON.stringify({
           content,
           channel: activeChannel,
-          type: 'test'
+          type: 'test',
+          senderId: session?.user?.id
         }),
       });
 
@@ -654,7 +658,7 @@ export default function ClassPage() {
       if (responseData.success && responseData.message) {
         console.log('Test message saved successfully');
         setMessages(prev => prev.map(msg => 
-          msg._id === tempId ? responseData.message : msg
+          msg._id === tempId ? { ...responseData.message, sender: msg.sender } : msg
         ));
       } else {
         throw new Error('Invalid response format');
@@ -751,7 +755,8 @@ export default function ClassPage() {
               console.log('Embedding test from session storage:', {
                 content,
                 channel,
-                type: 'test'
+                type: 'test',
+                senderId: session?.user?.id
               });
               
               const response = await fetch(`/api/classes/${classId}/messages`, {
@@ -762,7 +767,8 @@ export default function ClassPage() {
                 body: JSON.stringify({
                   content,
                   channel: channel,
-                  type: 'test'
+                  type: 'test',
+                  senderId: session?.user?.id
                 }),
               });
               
@@ -776,7 +782,7 @@ export default function ClassPage() {
               if (responseData.success && responseData.message) {
                 console.log('Session storage test saved successfully');
                 setMessages(prev => prev.map(msg => 
-                  msg._id === tempId ? responseData.message : msg
+                  msg._id === tempId ? { ...responseData.message, sender: msg.sender } : msg
                 ));
               } else {
                 throw new Error('Invalid response format');
@@ -1220,7 +1226,8 @@ export default function ClassPage() {
       console.log('Embedding test in chat:', {
         content,
         channel: activeChannel,
-        type: 'test'
+        type: 'test',
+        senderId: session?.user?.id
       });
       
       const response = await fetch(`/api/classes/${classId}/messages`, {
@@ -1231,7 +1238,8 @@ export default function ClassPage() {
         body: JSON.stringify({
           content,
           channel: activeChannel,
-          type: 'test'
+          type: 'test',
+          senderId: session?.user?.id
         }),
       });
 
@@ -1245,7 +1253,7 @@ export default function ClassPage() {
       if (responseData.success && responseData.message) {
         console.log('Test embed saved successfully');
         setMessages(prev => prev.map(msg => 
-          msg._id === tempId ? responseData.message : msg
+          msg._id === tempId ? { ...responseData.message, sender: msg.sender } : msg
         ));
       } else {
         throw new Error('Invalid response format');
