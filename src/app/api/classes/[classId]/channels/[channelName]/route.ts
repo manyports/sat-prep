@@ -4,6 +4,7 @@ import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import Message from '@/models/Message';
 import mongoose from 'mongoose';
+import { pusher } from '@/lib/pusher';
 
 export async function DELETE(
   request: NextRequest,
@@ -43,6 +44,14 @@ export async function DELETE(
     await classData.save();
 
     await Message.deleteMany({ class: classId, channel: channelName });
+
+    await pusher.trigger(
+      `class-${classId}`,
+      'channel-deleted',
+      {
+        channelName
+      }
+    );
 
     return NextResponse.json({
       success: true,

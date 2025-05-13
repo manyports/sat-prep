@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { pusherClient } from "@/lib/pusher" 
 
 interface Member {
   id: string;
@@ -452,6 +453,95 @@ export default function ClassPage() {
     setSidebarOpen(!sidebarOpen);
   };
   
+  useEffect(() => {
+    if (!classId) return;
+
+    const channelName = `class-${classId}`;
+    
+    const channel = pusherClient.subscribe(channelName);
+    
+    channel.bind('new-message', (data: { message: Message }) => {
+      const { message } = data;
+      
+      setMessages(prev => {
+        if (prev.some(m => m._id === message._id)) {
+          return prev;
+        }
+        
+        const tempMessage = prev.find(m => 
+          m._id.startsWith('temp-') && 
+          m.content === message.content && 
+          m.sender._id === message.sender._id &&
+          m.channel === message.channel
+        );
+        
+        if (tempMessage) {
+          return prev.map(m => m._id === tempMessage._id ? message : m);
+        }
+        
+        if (message.channel === activeChannel) {
+          return [...prev, message];
+        }
+        
+        return prev;
+      });
+      
+      if (message.channel === activeChannel) {
+        setTimeout(() => scrollToBottom(), 100);
+      }
+    });
+    
+    channel.bind('message-updated', (data: { message: { _id: string, content: string, updatedAt: string } }) => {
+      const { message } = data;
+      
+      setMessages(prev => 
+        prev.map(msg => 
+          msg._id === message._id 
+            ? { ...msg, content: message.content, updatedAt: message.updatedAt } 
+            : msg
+        )
+      );
+    });
+    
+    channel.bind('message-deleted', (data: { messageId: string }) => {
+      const { messageId } = data;
+      
+      setMessages(prev => prev.filter(msg => msg._id !== messageId));
+    });
+    
+    channel.bind('channel-created', (data: { channelName: string }) => {
+      const { channelName } = data;
+      
+      if (!channels.includes(channelName)) {
+        setChannels(prev => [...prev, channelName]);
+        
+        toast({
+          title: 'New Channel',
+          description: `Channel #${channelName} was created`
+        });
+      }
+    });
+    
+    channel.bind('channel-deleted', (data: { channelName: string }) => {
+      const { channelName } = data;
+      
+      setChannels(prev => prev.filter(ch => ch !== channelName));
+      
+      if (activeChannel === channelName) {
+        setActiveChannel('general');
+      }
+      
+      toast({
+        title: 'Channel Deleted',
+        description: `Channel #${channelName} was deleted`
+      });
+    });
+    
+    return () => {
+      pusherClient.unsubscribe(channelName);
+    };
+  }, [classId, activeChannel, channels]);
+
   const sendMessage = async () => {
     if (chatInput.trim() === "") return
     
@@ -477,7 +567,8 @@ export default function ClassPage() {
       console.log('Sending message to server:', {
         content: optimisticMessage.content,
         channel: activeChannel,
-        senderId: session?.user?.id
+        senderId: session?.user?.id,
+        type: 'text'
       });
       
       const response = await fetch(`/api/classes/${classId}/messages`, {
@@ -488,7 +579,8 @@ export default function ClassPage() {
         body: JSON.stringify({
           content: optimisticMessage.content,
           channel: activeChannel,
-          senderId: session?.user?.id
+          senderId: session?.user?.id,
+          type: 'text'
         }),
       });
 
@@ -501,9 +593,11 @@ export default function ClassPage() {
 
       if (responseData.success && responseData.message) {
         console.log('Message saved successfully');
+        
         setMessages(prev => prev.map(msg => 
           msg._id === tempId ? { ...responseData.message, sender: msg.sender } : msg
         ));
+        
       } else {
         throw new Error('Invalid response format');
       }
@@ -1283,6 +1377,14 @@ export default function ClassPage() {
     if (!editingMessage) return;
     
     try {
+      setMessages(prev => 
+        prev.map(msg => 
+          msg._id === editingMessage._id 
+            ? { ...msg, content: editMessageContent } 
+            : msg
+        )
+      );
+      
       const response = await fetch(`/api/classes/${classId}/messages/${editingMessage._id}`, {
         method: 'PUT',
         headers: {
@@ -1296,14 +1398,6 @@ export default function ClassPage() {
       if (!response.ok) {
         throw new Error('Failed to update message');
       }
-
-      setMessages(prev => 
-        prev.map(msg => 
-          msg._id === editingMessage._id 
-            ? { ...msg, content: editMessageContent } 
-            : msg
-        )
-      );
       
       setEditingMessage(null);
       setEditMessageContent("");
@@ -1312,7 +1406,18 @@ export default function ClassPage() {
         title: 'Success',
         description: 'Message updated',
       });
+      
     } catch (error) {
+      if (editingMessage) {
+        setMessages(prev => 
+          prev.map(msg => 
+            msg._id === editingMessage._id 
+              ? editingMessage 
+              : msg
+          )
+        );
+      }
+      
       toast({
         title: 'Error',
         description: 'Failed to update message',
@@ -1335,6 +1440,8 @@ export default function ClassPage() {
     if (!messageToDelete) return;
     
     try {
+      setMessages(prev => prev.filter(msg => msg._id !== messageToDelete._id));
+      
       const response = await fetch(`/api/classes/${classId}/messages/${messageToDelete._id}`, {
         method: 'DELETE',
       });
@@ -1342,8 +1449,6 @@ export default function ClassPage() {
       if (!response.ok) {
         throw new Error('Failed to delete message');
       }
-
-      setMessages(prev => prev.filter(msg => msg._id !== messageToDelete._id));
       
       setIsDeleting(false);
       setMessageToDelete(null);
@@ -1352,7 +1457,12 @@ export default function ClassPage() {
         title: 'Success',
         description: 'Message deleted',
       });
+      
     } catch (error) {
+      if (messageToDelete) {
+        setMessages(prev => [...prev, messageToDelete]);
+      }
+      
       toast({
         title: 'Error',
         description: 'Failed to delete message',

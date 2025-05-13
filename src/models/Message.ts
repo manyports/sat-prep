@@ -5,6 +5,7 @@ export interface IMessage extends mongoose.Document {
   sender: mongoose.Types.ObjectId;
   content: string;
   channel: string;
+  type?: string;
   assignment?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -32,6 +33,11 @@ const MessageSchema = new mongoose.Schema<IMessage>(
       required: [true, 'Please provide a channel'],
       enum: ['general', 'assignments', 'questions'],
       default: 'general',
+    },
+    type: {
+      type: String,
+      enum: ['text', 'test', 'assignment'],
+      default: 'text',
     },
     assignment: {
       type: mongoose.Schema.Types.ObjectId,

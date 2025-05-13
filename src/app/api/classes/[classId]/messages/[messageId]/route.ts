@@ -4,6 +4,7 @@ import { connectToMongoose } from '@/lib/mongodb';
 import Message from '@/models/Message';
 import Class from '@/models/Class';
 import mongoose from 'mongoose';
+import { pusher } from '@/lib/pusher';
 
 export async function PUT(
   request: NextRequest,
@@ -51,13 +52,23 @@ export async function PUT(
     message.content = content.trim();
     await message.save();
 
+    const updatedMessage = {
+      _id: message._id.toString(),
+      content: message.content,
+      updatedAt: message.updatedAt
+    };
+
+    await pusher.trigger(
+      `class-${classId}`,
+      'message-updated',
+      {
+        message: updatedMessage
+      }
+    );
+
     return NextResponse.json({
       success: true,
-      message: {
-        _id: message._id.toString(),
-        content: message.content,
-        updatedAt: message.updatedAt
-      }
+      message: updatedMessage
     });
   } catch (error) {
     console.error('Error updating message:', error);
@@ -108,6 +119,14 @@ export async function DELETE(
     }
 
     await Message.findByIdAndDelete(messageId);
+
+    await pusher.trigger(
+      `class-${classId}`,
+      'message-deleted',
+      {
+        messageId
+      }
+    );
 
     return NextResponse.json({
       success: true,

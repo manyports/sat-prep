@@ -3,6 +3,7 @@ import { getAuth } from '@/lib/auth';
 import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import mongoose from 'mongoose';
+import { pusher } from '@/lib/pusher';
 
 export async function GET(
   request: NextRequest,
@@ -88,6 +89,14 @@ export async function POST(
 
     classData.channels = [...channels, formattedName];
     await classData.save();
+
+    await pusher.trigger(
+      `class-${classId}`,
+      'channel-created',
+      {
+        channelName: formattedName
+      }
+    );
 
     return NextResponse.json({
       success: true,

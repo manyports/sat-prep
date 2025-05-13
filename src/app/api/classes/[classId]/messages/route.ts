@@ -4,6 +4,7 @@ import { connectToMongoose } from '@/lib/mongodb';
 import Class from '@/models/Class';
 import Message from '@/models/Message';
 import mongoose from 'mongoose';
+import { pusher } from '@/lib/pusher';
 
 export async function GET(
   request: NextRequest,
@@ -114,7 +115,7 @@ export async function POST(
       return NextResponse.json({ error: 'Invalid class ID' }, { status: 400 });
     }
 
-    const { content, channel = 'general', senderId } = await request.json();
+    const { content, channel = 'general', senderId, type } = await request.json();
     if (!content?.trim()) {
       return NextResponse.json(
         { error: 'Message content is required' },
@@ -143,25 +144,37 @@ export async function POST(
       sender: actualSenderId,
       content: content.trim(),
       channel,
+      type
     });
 
     await message.populate('sender', 'name email image');
 
+    const messageData = {
+      _id: message._id.toString(),
+      content: message.content,
+      sender: {
+        _id: message.sender._id.toString(),
+        name: message.sender.name,
+        email: message.sender.email,
+        image: message.sender.image
+      },
+      channel: message.channel,
+      createdAt: message.createdAt,
+      updatedAt: message.updatedAt,
+      type: message.type
+    };
+
+    await pusher.trigger(
+      `class-${classId}`,
+      'new-message',
+      {
+        message: messageData
+      }
+    );
+
     return NextResponse.json({
       success: true,
-      message: {
-        _id: message._id.toString(),
-        content: message.content,
-        sender: {
-          _id: message.sender._id.toString(),
-          name: message.sender.name,
-          email: message.sender.email,
-          image: message.sender.image
-        },
-        channel: message.channel,
-        createdAt: message.createdAt,
-        updatedAt: message.updatedAt
-      }
+      message: messageData
     });
   } catch (error) {
     console.error('Error creating message:', error);
